@@ -11,7 +11,7 @@ La escala suma 40 puntos. El estado registra evidencia disponible y actividades 
 | EDA | 5 | Estadísticos de edad, distribución de frecuencias, ocho gráficos, comparación de 33 dominios y Top 10 ponderado con interpretación y límites | Completado |
 | R Markdown | 5 | Fuente reproducible, ficha académica editable y HTML autocontenido con 15 tablas, 8 gráficos, índice y referencias | Completado técnicamente. Datos académicos pendientes de diligenciar |
 | Publicación y entrega | 5 | Repositorio público y HTML accesible en GitHub Pages | Pendiente completar la portada con los datos reales y entregar el PDF |
-| Trabajo en equipo | 5 | Sección en el informe y tabla siguiente para registrar los tres aportes reales y su evidencia | Pendiente de diligenciar por el equipo |
+| Trabajo en equipo | 5 | Sección en el informe y tabla siguiente para registrar los dos aportes reales y su evidencia | Pendiente de diligenciar por el equipo |
 | **Total posible** | **40** | | |
 
 ## Integrantes y evidencias
@@ -20,9 +20,8 @@ Completar una fila por integrante. Indicar los aportes realizados y la evidencia
 
 | Nombre completo | Responsabilidades y aportes realizados | Evidencia |
 |---|---|---|
-| [Integrante 1] | [Completar] | [Completar] |
-| [Integrante 2] | [Completar] | [Completar] |
-| [Integrante 3] | [Completar] | [Completar] |
+| Juliana Valentina Juya Lopez | [Completar] | [Completar] |
+| Johan Sebastian Sierra Torres | [Completar] | [Completar] |
 
 ## Control de entrega
 

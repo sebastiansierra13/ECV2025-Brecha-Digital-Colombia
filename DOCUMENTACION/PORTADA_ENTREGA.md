@@ -8,16 +8,15 @@ Frecuencia de uso de internet por edad, sexo y departamento en la Encuesta Nacio
 Ciencia de Datos y Aprendizaje Automático para la Toma de Decisiones
 
 **Universidad**  
-[Nombre de la universidad]
+Universidad Pedagógica y Tecnológica de Colombia
 
 **Programa**  
 Especialización en Inteligencia Artificial
 
 **Integrantes**
 
-- [Nombre completo del integrante 1]
-- [Nombre completo del integrante 2]
-- [Nombre completo del integrante 3]
+- Juliana Valentina Juya Lopez
+- Johan Sebastian Sierra Torres
 
 **Docente**  
 [Nombre del docente]

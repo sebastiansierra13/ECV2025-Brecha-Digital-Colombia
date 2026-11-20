@@ -4,16 +4,14 @@ subtitle: "Frecuencia de uso de internet por edad, sexo y departamento · ECV 20
 author: "Tarea I · Análisis Exploratorio de Datos"
 lang: es-CO
 params:
-  universidad: "Pendiente de diligenciar"
+  universidad: "Universidad Pedagógica y Tecnológica de Colombia"
   asignatura: "Ciencia de Datos y Aprendizaje Automático para la Toma de Decisiones"
   docente: "Pendiente de diligenciar"
-  integrante_1: "Pendiente de diligenciar"
-  integrante_2: "Pendiente de diligenciar"
-  integrante_3: "Pendiente de diligenciar"
+  integrante_1: "Juliana Valentina Juya Lopez"
+  integrante_2: "Johan Sebastian Sierra Torres"
   fecha_entrega: "Pendiente de diligenciar"
   contribucion_1: "Pendiente de registrar el aporte real y su evidencia."
   contribucion_2: "Pendiente de registrar el aporte real y su evidencia."
-  contribucion_3: "Pendiente de registrar el aporte real y su evidencia."
 output:
   html_document:
     toc: true
@@ -61,7 +59,6 @@ table { font-variant-numeric: tabular-nums; }
 **Docente** · `r params$docente`  
 **Integrante 1** · `r params$integrante_1`  
 **Integrante 2** · `r params$integrante_2`  
-**Integrante 3** · `r params$integrante_3`  
 **Fecha de entrega** · `r params$fecha_entrega`
 :::
 
@@ -263,7 +260,6 @@ Registro pendiente de diligenciar por los integrantes. Cada entrada debe indicar
 
 - **Integrante 1 · `r params$integrante_1`.** `r params$contribucion_1`
 - **Integrante 2 · `r params$integrante_2`.** `r params$contribucion_2`
-- **Integrante 3 · `r params$integrante_3`.** `r params$contribucion_3`
 
 # Referencias
 
