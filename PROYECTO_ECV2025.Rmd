@@ -6,12 +6,8 @@ lang: es-CO
 params:
   universidad: "Universidad Pedagógica y Tecnológica de Colombia"
   asignatura: "Ciencia de Datos y Aprendizaje Automático para la Toma de Decisiones"
-  docente: "Pendiente de diligenciar"
   integrante_1: "Juliana Valentina Juya Lopez"
   integrante_2: "Johan Sebastian Sierra Torres"
-  fecha_entrega: "Pendiente de diligenciar"
-  contribucion_1: "Pendiente de registrar el aporte real y su evidencia."
-  contribucion_2: "Pendiente de registrar el aporte real y su evidencia."
 output:
   html_document:
     toc: true
@@ -56,10 +52,8 @@ table { font-variant-numeric: tabular-nums; }
 ::: {.ficha-entrega}
 **Universidad** · `r params$universidad`  
 **Asignatura** · `r params$asignatura`  
-**Docente** · `r params$docente`  
 **Integrante 1** · `r params$integrante_1`  
-**Integrante 2** · `r params$integrante_2`  
-**Fecha de entrega** · `r params$fecha_entrega`
+**Integrante 2** · `r params$integrante_2`
 :::
 
 # Introducción y problema
@@ -253,13 +247,6 @@ Se cotejan a un decimal las cifras de cualquier uso para el país, hombres, muje
 **Límites.** Los factores calibrados permiten estimar proporciones. El diseño estratificado, multietápico y por conglomerados requiere un cálculo específico de errores estándar e intervalos de confianza para determinar la precisión y evaluar contrastes. Este EDA trabaja con estimaciones puntuales y comparaciones descriptivas de un solo año. Las diferencias observadas pueden combinar características demográficas y territoriales. Los resultados no permiten atribuirlas causalmente a la edad, al sexo al nacer, al lugar de residencia ni a una intervención.
 
 **Líneas de investigación.** Un trabajo posterior podría estimar intervalos de confianza con las variables del diseño muestral, explorar diferencias entre cabecera y resto en los dominios con cobertura y comparar varios años cuando se pueda comprobar la equivalencia de las preguntas y los universos. También sería pertinente contrastar la frecuencia con indicadores de acceso en el hogar, calidad del servicio o habilidades digitales.
-
-# Contribuciones del equipo
-
-Registro pendiente de diligenciar por los integrantes. Cada entrada debe indicar el aporte efectivamente realizado y la evidencia correspondiente, cuando esté disponible.
-
-- **Integrante 1 · `r params$integrante_1`.** `r params$contribucion_1`
-- **Integrante 2 · `r params$integrante_2`.** `r params$contribucion_2`
 
 # Referencias
 

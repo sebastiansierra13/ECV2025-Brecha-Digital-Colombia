@@ -18,13 +18,7 @@ Especialización en Inteligencia Artificial
 - Juliana Valentina Juya Lopez
 - Johan Sebastian Sierra Torres
 
-**Docente**  
-[Nombre del docente]
-
-**Fecha de entrega**  
-[Fecha de entrega]
-
 ## Enlaces de entrega
 
-- **Repositorio público de GitHub** · [Pegar e insertar la URL pública del repositorio]
-- **Informe HTML** · [Pegar e insertar la URL pública del informe en GitHub Pages]
+- **Repositorio público de GitHub** · https://github.com/sebastiansierra13/ECV2025-Brecha-Digital-Colombia
+- **Informe HTML** · https://sebastiansierra13.github.io/ECV2025-Brecha-Digital-Colombia/PROYECTO_ECV2025.html

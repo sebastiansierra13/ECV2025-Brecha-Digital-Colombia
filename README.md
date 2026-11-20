@@ -16,7 +16,7 @@ Las variables centrales son `P1084` (frecuencia de internet), `P6040` (edad), `P
 
 El análisis conservó 221.043 personas elegibles. La proporción ponderada de uso diario fue 66,09 % y la de cualquier uso fue 82,26 %. Atlántico encabezó el ranking de uso diario con 80,46 %. Son estimaciones puntuales. El estudio no calcula intervalos de confianza ni permite inferir causalidad. La cobertura de San Andrés corresponde a la cabecera de la encuesta.
 
-La [descripción metodológica](DOCUMENTACION/metodologia.md) detalla los controles y las limitaciones. Los nombres y aportes del equipo deben diligenciarse con información real.
+La [descripción metodológica](DOCUMENTACION/metodologia.md) detalla los controles y las limitaciones.
 
 [Informe público en GitHub Pages](https://sebastiansierra13.github.io/ECV2025-Brecha-Digital-Colombia/PROYECTO_ECV2025.html) · [Repositorio](https://github.com/sebastiansierra13/ECV2025-Brecha-Digital-Colombia) · [Código del informe](PROYECTO_ECV2025.Rmd) · [Metodología](DOCUMENTACION/metodologia.md) · [Rúbrica y equipo](DOCUMENTACION/PLAN_Y_RUBRICA.md)
 
@@ -54,7 +54,7 @@ La [descripción metodológica](DOCUMENTACION/metodologia.md) detalla los contro
 
 ## Publicación y entrega
 
-1. Completa los campos pendientes de `params` en el encabezado de `PROYECTO_ECV2025.Rmd` (docente, fecha y contribuciones reales). Vuelve a compilar el informe para actualizar la ficha y la sección de contribuciones. Registra también los aportes y su evidencia en [Plan y rúbrica](DOCUMENTACION/PLAN_Y_RUBRICA.md).
+1. Consulta la [verificación de la rúbrica](DOCUMENTACION/PLAN_Y_RUBRICA.md).
 2. Con tu cuenta de GitHub, crea un repositorio **público vacío** y copia su URL real. En esta carpeta configura Git con tu nombre y correo si aún hace falta. Revisa `git status --short --ignored`, añade los archivos con `git add .`, comprueba la lista con `git diff --cached --name-only` y realiza el commit. Añade la URL real con `git remote add origin` seguida de la URL y ejecuta `git push -u origin main`.
 3. En GitHub, abre **Settings → Pages**, elige **Deploy from a branch**, `main` y `/ (root)`. Cuando termine el despliegue, copia la URL base que muestre GitHub Pages y añade `PROYECTO_ECV2025.html` como nombre de archivo al final. Comprueba el repositorio y el informe desde una ventana privada. [Documentación de GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
 4. Completa [la portada editable](DOCUMENTACION/PORTADA_ENTREGA.md) con los integrantes y los dos enlaces reales. Expórtala a PDF, abre el archivo y prueba ambos hipervínculos antes de entregarlo.
