@@ -18,7 +18,7 @@ El análisis conservó 221.043 personas elegibles. La proporción ponderada de u
 
 La [descripción metodológica](DOCUMENTACION/metodologia.md) detalla los controles y las limitaciones. Los nombres y aportes del equipo deben diligenciarse con información real.
 
-[Informe HTML](PROYECTO_ECV2025.html) · [Código del informe](PROYECTO_ECV2025.Rmd) · [Metodología](DOCUMENTACION/metodologia.md) · [Rúbrica y equipo](DOCUMENTACION/PLAN_Y_RUBRICA.md)
+[Informe público en GitHub Pages](https://sebastiansierra13.github.io/ECV2025-Brecha-Digital-Colombia/PROYECTO_ECV2025.html) · [Repositorio](https://github.com/sebastiansierra13/ECV2025-Brecha-Digital-Colombia) · [Código del informe](PROYECTO_ECV2025.Rmd) · [Metodología](DOCUMENTACION/metodologia.md) · [Rúbrica y equipo](DOCUMENTACION/PLAN_Y_RUBRICA.md)
 
 ## Ejecutar en RStudio para Windows
 
