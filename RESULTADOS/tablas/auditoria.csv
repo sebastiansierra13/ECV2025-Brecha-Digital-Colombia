@@ -1,0 +1,4 @@
+"módulo";"archivo";"contenedor";"filas_originales";"columnas_originales";"columnas_leídas";"copias_exactas";"filas_tras_deduplicar";"sha256";"llaves_repetidas_restantes"
+"TIC";"Tecnologías de información y comunicación.csv";"CSV extraído";221043;89;6;0;221043;"b46ad5409b4f48fdcd9bb4eb7baea89ee182804efe78dabac713399fbbd898f9";0
+"Personas";"Características y composición del hogar.csv";"CSV extraído";235350;78;7;0;235350;"6cac205df0521a1a6d0a4e4c467d8a74fff8b49cb84f47d3df7e06e64935895e";0
+"Diseño";"Variables diseño muestral.csv";"CSV extraído";235350;11;5;0;235350;"eb3ce9cf16f2bbf1d6454b34791ebeea7c024bf134e4d53053fc88145cbcb4d2";0

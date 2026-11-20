@@ -1,0 +1,274 @@
+---
+title: "Brecha digital en Colombia"
+subtitle: "Frecuencia de uso de internet por edad, sexo y departamento · ECV 2025"
+author: "Tarea I · Análisis Exploratorio de Datos"
+lang: es-CO
+params:
+  universidad: "Pendiente de diligenciar"
+  asignatura: "Ciencia de Datos y Aprendizaje Automático para la Toma de Decisiones"
+  docente: "Pendiente de diligenciar"
+  integrante_1: "Pendiente de diligenciar"
+  integrante_2: "Pendiente de diligenciar"
+  integrante_3: "Pendiente de diligenciar"
+  fecha_entrega: "Pendiente de diligenciar"
+  contribucion_1: "Pendiente de registrar el aporte real y su evidencia."
+  contribucion_2: "Pendiente de registrar el aporte real y su evidencia."
+  contribucion_3: "Pendiente de registrar el aporte real y su evidencia."
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    toc_depth: 2
+    number_sections: true
+    theme: readable
+    highlight: tango
+    code_folding: hide
+    self_contained: true
+---
+
+```{r configuracion, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, fig.width = 8.6, fig.height = 4.6,
+                      dpi = 120, out.width = "100%")
+n_txt <- function(x) formatC(x, format = "f", digits = 0, big.mark = ".", decimal.mark = ",")
+d_txt <- function(x, dec = 2L) formatC(x, format = "f", digits = dec, big.mark = ".", decimal.mark = ",")
+pct <- function(x) paste0(d_txt(x), " %")
+tabla <- function(x, titulo, digitos = 2L) {
+  nombres <- gsub("_", " ", names(x), fixed = TRUE)
+  knitr::kable(x, col.names = nombres, caption = titulo, digits = digitos, row.names = FALSE,
+               format.args = list(big.mark = ".", decimal.mark = ","))
+}
+```
+
+<style>
+body { color: #233744; }
+h1, h2, h3 { color: #172d3b; }
+#header { border-bottom: 3px solid #176f82; padding: 2rem 0 1.1rem; margin-bottom: 2rem; }
+#header .subtitle { color: #405969; font-size: 1.35em; }
+caption { color: #405969; text-align: left; }
+table { font-variant-numeric: tabular-nums; }
+.ficha-entrega { margin-bottom: 2rem; }
+.grafico-dominios { overflow-x: auto; }
+@media (max-width: 800px) {
+  table { display: block; overflow-x: auto; }
+  .grafico-dominios img { min-width: 620px; max-width: none; }
+}
+</style>
+
+::: {.ficha-entrega}
+**Universidad** · `r params$universidad`  
+**Asignatura** · `r params$asignatura`  
+**Docente** · `r params$docente`  
+**Integrante 1** · `r params$integrante_1`  
+**Integrante 2** · `r params$integrante_2`  
+**Integrante 3** · `r params$integrante_3`  
+**Fecha de entrega** · `r params$fecha_entrega`
+:::
+
+# Introducción y problema
+
+El uso de internet facilita el acceso a información, servicios y oportunidades educativas. La frecuencia de uso permite observar una dimensión de la brecha digital entre personas que se conectan diariamente, personas que lo hacen de manera esporádica y quienes reportan que no utilizan internet. Un promedio nacional puede ocultar diferencias entre grupos de edad, entre categorías de sexo al nacer y entre territorios.
+
+**Pregunta de investigación.** ¿Cómo varía la frecuencia de uso de internet según la edad, el sexo al nacer y el departamento de residencia entre las personas de 5 años o más cubiertas por la ECV 2025 en Colombia?
+
+## Objetivos
+
+**General.** Describir la distribución de la frecuencia de uso de internet en las personas de 5 años o más cubiertas por la ECV 2025 y cuantificar sus diferencias por edad, sexo al nacer y dominio departamental.
+
+1. Caracterizar la edad, el sexo al nacer y la distribución de las respuestas de frecuencia en la muestra.
+2. Auditar las llaves, la cobertura de los módulos, los datos faltantes y los duplicados, y documentar su efecto sobre el tamaño de la base analítica.
+3. Estimar las proporciones ponderadas de frecuencia por edad, sexo al nacer y dominio territorial, y ordenar los diez dominios con mayor proporción estimada de uso diario.
+
+# Fuente y selección de variables
+
+La Encuesta Nacional de Calidad de Vida 2025 del DANE cubre a la población civil no institucional residente en Colombia. Su diseño es probabilístico, estratificado, multietápico y por conglomerados. La unidad del análisis es la persona de **5 años o más**. El capítulo TIC tiene ese umbral de edad. La pregunta mide uso desde cualquier lugar y dispositivo. La disponibilidad de conexión en el hogar es otro indicador de la ECV.
+
+Se integran tres CSV locales de la descarga oficial. TIC contiene las respuestas de personas elegibles. Características y composición incluye a todas las personas encuestadas de los hogares. Diseño muestral contiene una fila por persona con su código geográfico y factor de expansión. Sus dimensiones coinciden con el [diccionario del catálogo 905](https://microdatos.dane.gov.co/index.php/catalog/905/data-dictionary).
+
+| Campo | Módulo | Tipo y unidad | Códigos, valores especiales y propósito |
+|---|---|---|---|
+| P6040 | Composición | Cuantitativa discreta, años cumplidos | Enteros no negativos. El cero es una edad válida. Define elegibilidad y grupos etarios. |
+| P6020 | Composición | Cualitativa nominal, categoría por persona | 1 Hombre, 2 Mujer. Describe y compara las dos categorías publicadas de sexo al nacer. |
+| P1084 | TIC | Cualitativa ordinal, categoría por persona | 1 diario, 2 semanal (menos de diario), 3 mensual (menos de semanal), 4 anual (menos de mensual), 5 no utiliza. No aplica a menores de 5 años. Mide la intensidad declarada. |
+| MPIO | Diseño | Código geográfico nominal, texto de cinco dígitos | Se conservan los ceros iniciales y se usan los dos primeros dígitos para asignar el dominio departamental según DIVIPOLA. |
+| FEX_C | Diseño | Cuantitativa continua, factor de expansión | Peso calibrado, finito y positivo. Permite estimar proporciones poblacionales. |
+| DIRECTORIO, SECUENCIA_P, ORDEN | Tres módulos | Identificadores de vivienda, hogar y persona | En conjunto permiten unir a cada persona una sola vez. |
+| SECUENCIA_ENCUESTA | TIC y Composición | Identificador auxiliar de encuesta | Se coteja en los cruces entre ambos módulos. |
+
+La tabla identifica los campos de los tres módulos y su función en la integración y el análisis. P1084 incluye la respuesta válida «no utiliza», de modo que el análisis puede describir tanto la frecuencia de uso como la proporción que declara no usar internet. La pregunta registra la frecuencia declarada. Por sí sola, no permite evaluar la calidad de la conexión ni identificar las razones del no uso.
+
+# Importación y controles de calidad
+
+```{r ejecutar}
+source("R/ejecutar.R", encoding = "UTF-8")
+resultados <- ejecutar_ecv()
+limpieza <- resultados$limpieza
+eda <- resultados$eda
+graficos <- resultados$graficos
+```
+
+Se leen las columnas necesarias del CSV separado por punto y coma. La coma decimal se convierte al interpretar el factor de expansión. Las llaves y MPIO se conservan como texto. El inventario exportado incluye el SHA-256 de cada archivo para identificar la versión local.
+
+```{r auditoria}
+tabla(limpieza$auditoria[c("módulo", "filas_originales", "columnas_originales",
+                           "columnas_leídas", "copias_exactas", "filas_tras_deduplicar",
+                           "llaves_repetidas_restantes")],
+      "Dimensiones y duplicados por módulo")
+```
+
+Una copia exacta es la repetición textual de una fila CSV completa. La rutina conserva la primera aparición. Si una llave queda repetida con filas distintas, la integración se detiene para revisar el conflicto. Las respuestas iguales de personas con llaves diferentes se conservan.
+
+En total se detectaron `r n_txt(sum(limpieza$auditoria$copias_exactas))` copias exactas y quedaron `r n_txt(sum(limpieza$auditoria$llaves_repetidas_restantes))` llaves repetidas después del control de duplicados. La comparación de filas antes y después muestra cuántas se conservaron en cada módulo. El control verifica duplicación y estructura dentro de los archivos entregados. La exactitud de las respuestas individuales queda fuera de este control.
+
+```{r cruces}
+tabla(limpieza$uniones, "Controles de correspondencia persona a persona")
+tabla(limpieza$pesos, "Comparación de pesos frente al módulo de diseño", 8)
+```
+
+Los seis controles de cruce registran cero discrepancias. Características y diseño concilian persona a persona, TIC cubre exactamente a las personas elegibles y la secuencia de encuesta coincide en ambos módulos donde se compara. La unión puede incorporar las variables sin multiplicar observaciones. El control verifica las llaves y la cobertura en los archivos disponibles. La representatividad depende del diseño de la encuesta.
+
+La segunda tabla compara las copias de FEX_C de TIC y Composición con la de Diseño para la misma persona. Hay diferencias de aproximadamente una millonésima como máximo, compatibles con la precisión de exportación. Las estimaciones usan exclusivamente FEX_C del módulo de Diseño. Esta comparación evalúa la consistencia entre archivos. La precisión estadística de cada proporción requiere información adicional del diseño.
+
+## Faltantes y base analítica
+
+```{r faltantes}
+tabla(limpieza$calidad, "Cobertura y calidad por variable en el universo de composición")
+tabla(limpieza$flujo, "Recuento de personas antes y después de aplicar el universo y los controles")
+```
+
+La primera tabla cuenta por variable los valores aplicables, faltantes, inválidos y fuera de universo. Los controles comprueban edad entera, códigos de sexo y frecuencia, departamento reconocido y factor positivo. Al sumar los casos por variable, se obtienen `r n_txt(sum(limpieza$calidad$faltantes))` valores faltantes aplicables y `r n_txt(sum(limpieza$calidad$inválidos))` valores inválidos. El control identifica problemas según las reglas especificadas. Puede haber errores de declaración dentro de categorías válidas.
+
+La segunda tabla concilia el tamaño de la base desde Composición hasta el análisis. Las `r n_txt(limpieza$flujo$filas[2])` personas menores de cinco años quedan fuera del capítulo TIC por diseño. Se excluyeron `r n_txt(limpieza$flujo$filas[5])` casos elegibles por calidad y todos los análisis usan la misma base de `r n_txt(limpieza$flujo$filas[6])` casos. La ausencia de faltantes aplicables permitió trabajar sin imputación. Las conclusiones sobre frecuencia se restringen al universo elegible.
+
+# Análisis exploratorio
+
+Los estadísticos de edad, el histograma, las cajas y las columnas identificadas como **muestra** se calculan sin ponderar. Para estimar una proporción poblacional, se suman los factores de expansión calibrados FEX_C de las personas con la respuesta de interés. Esa suma se divide por el total de FEX_C de todas las personas elegibles con datos válidos dentro del dominio y se multiplica por 100. El numerador del uso diario incluye **P1084 = 1** y el de cualquier uso incluye **P1084 = 1 a 4**. Ambos denominadores incluyen **P1084 = 5**. Los factores producen estimaciones puntuales. Cuantificar su incertidumbre requiere incorporar la estratificación y los conglomerados del diseño.
+
+## Edad y composición de la muestra
+
+```{r edad}
+tabla(eda$edad, "Estadísticos de edad sin ponderar")
+graficos$histograma_edad
+```
+
+La tabla resume los años cumplidos persona por persona y el histograma cuenta los casos en intervalos de cinco años. La **moda muestral** es la edad exacta con más observaciones sin ponderar. Se reportan todas las edades que compartan el máximo en caso de empate. La tabla registra `r paste(eda$edad$valor[eda$edad$estadístico == "Moda"], collapse = ", ")` años como moda.
+
+La mediana es de `r d_txt(median(limpieza$base$edad), 0)` años y la mitad central de las edades se ubica entre `r d_txt(quantile(limpieza$base$edad, .25), 0)` y `r d_txt(quantile(limpieza$base$edad, .75), 0)` años. La media de `r d_txt(mean(limpieza$base$edad))` años supera la mediana y se observan edades hasta los `r d_txt(max(limpieza$base$edad), 0)` años. Estos resultados muestran la composición etaria de la base analítica. El histograma agrupa edades y la moda corresponde al recuento de edades individuales. Ambos son descriptivos de la muestra.
+
+```{r composicion}
+tabla(eda$sexo[c("sexo", "n_muestra", "composición_muestra_pct", "composición_ponderada_pct")],
+      "Composición por sexo al nacer")
+graficos$composicion_sexo
+```
+
+La tabla compara los conteos y los porcentajes con y sin expansión para las dos categorías de sexo al nacer. El gráfico muestra los porcentajes de la muestra, en la que las mujeres representan el `r pct(eda$sexo$composición_muestra_pct[eda$sexo$sexo == "Mujer"])`. Esto describe quiénes componen la base. Para comparar el uso de internet se necesita calcular una proporción dentro de cada grupo, como se hace más adelante.
+
+## Frecuencia nacional
+
+```{r frecuencia}
+tabla(eda$frecuencia, "Distribución de P1084 en la muestra y con expansión")
+graficos$frecuencia_nacional
+```
+
+La tabla cuenta las cinco respuestas de P1084 y estima qué proporción representa cada una después de expandir la muestra. El gráfico muestra esa distribución ponderada. El uso diario es la respuesta más frecuente. Representa el **`r pct(eda$nacional$diario_pct)`** de la población cubierta de 5 años o más, frente al `r pct(eda$frecuencia$porcentaje_muestra[1])` sin ponderar. El `r pct(eda$frecuencia$porcentaje_ponderado[5])` reporta que no utiliza internet. Al sumar las cuatro frecuencias de uso, se obtiene **`r pct(eda$nacional$uso_pct)`**. La diferencia entre cualquier uso y uso diario muestra que parte de la población usuaria se conecta con menor frecuencia. Este indicador tampoco mide las habilidades digitales ni el tiempo que las personas pasan en línea.
+
+## Diferencias por edad
+
+```{r edad_cruces}
+tabla(eda$medianas, "Medianas de edad en la muestra por frecuencia")
+graficos$cajas_edad
+```
+
+La tabla y los diagramas de cajas resumen las edades observadas dentro de cada frecuencia. Las personas que usan internet diariamente tienen una edad mediana de `r eda$medianas$mediana_edad[eda$medianas$frecuencia == "Diario"]` años, frente a `r eda$medianas$mediana_edad[eda$medianas$frecuencia == "No utiliza"]` en quienes declaran que no lo usan. Las cajas muestran que ambos grupos comparten parte de su rango intercuartílico. La diferencia de medianas caracteriza a los grupos de la muestra y, por sí sola, no establece un efecto de la edad sobre el uso.
+
+```{r frecuencia_por_edad}
+tabla(eda$grupos_edad[c("grupo_edad", "n_muestra", "diario_pct", "uso_pct")],
+      "Uso diario y cualquier uso por grupo de edad, porcentajes ponderados")
+graficos$frecuencia_edad
+```
+
+```{r extremos_edad, include=FALSE}
+alto_edad <- eda$grupos_edad[which.max(eda$grupos_edad$diario_pct), ]
+bajo_edad <- eda$grupos_edad[which.min(eda$grupos_edad$diario_pct), ]
+```
+
+La tabla calcula el uso diario y cualquier uso dentro de cada tramo de edad. Las barras apiladas muestran cómo se distribuyen las cinco respuestas en cada tramo. El mayor porcentaje de uso diario se observa en **`r alto_edad$grupo_edad` años** (`r pct(alto_edad$diario_pct)`) y el menor en **`r bajo_edad$grupo_edad` años** (`r pct(bajo_edad$diario_pct)`). La diferencia descriptiva es de `r d_txt(alto_edad$diario_pct - bajo_edad$diario_pct)` puntos porcentuales. El contraste permite identificar tramos con distintos niveles de uso en 2025. La encuesta de un solo año no permite seguir la evolución de las mismas personas ni aislar diferencias generacionales.
+
+## Diferencias por sexo al nacer
+
+```{r sexo_cruces}
+tabla(eda$sexo[c("sexo", "n_muestra", "diario_pct", "uso_pct")],
+      "Uso diario y cualquier uso por sexo al nacer, porcentajes ponderados")
+graficos$frecuencia_sexo
+```
+
+La tabla calcula el uso diario y cualquier uso dentro de cada categoría de sexo al nacer. El gráfico desagrega las cinco respuestas como segmentos ponderados. El uso diario alcanza el `r pct(eda$sexo$diario_pct[eda$sexo$sexo == "Mujer"])` en mujeres y el `r pct(eda$sexo$diario_pct[eda$sexo$sexo == "Hombre"])` en hombres. La distancia absoluta es de `r d_txt(diff(range(eda$sexo$diario_pct)))` puntos porcentuales. La comparación es marginal y puede reflejar diferencias en la composición por edad o territorio. Sin estimar errores estándar para el contraste, queda abierta la pregunta de si la diferencia supera la variabilidad muestral.
+
+## Departamentos y diez valores más altos
+
+Los 33 dominios corresponden a los 32 departamentos y Bogotá D.C. San Andrés se refiere a la cabecera cubierta por la ECV. Se obtiene el código departamental a partir del prefijo de MPIO, conservando los ceros iniciales. En esta comparación, el departamento es la unidad territorial de agregación. Las proporciones no se pueden extrapolar a municipios individuales ni a la población de San Andrés fuera de la cabecera cubierta. [Boletín técnico ECV 2025, p. 2](https://www.dane.gov.co/files/operaciones/ECV/bol-ECV-2025.pdf#page=2).
+
+::: {.grafico-dominios}
+```{r comparacion_geo, fig.height=12.8, fig.alt="Estimaciones del uso diario de internet para 33 dominios, ordenadas de mayor a menor, con una línea de referencia nacional."}
+graficos$departamentos
+```
+:::
+
+```{r extremos_geo, include=FALSE}
+primero <- eda$departamentos[1L, ]
+ultimo <- tail(eda$departamentos, 1L)
+```
+
+Cada punto representa el porcentaje ponderado de uso diario en el dominio y la línea discontinua marca la estimación del total nacional. El valor más alto corresponde a **`r primero$departamento`** (`r pct(primero$diario_pct)`) y el menor a **`r ultimo$departamento`** (`r pct(ultimo$diario_pct)`). Los separan `r d_txt(primero$diario_pct - ultimo$diario_pct)` puntos porcentuales. La figura permite ubicar los dominios respecto a la referencia nacional. La distancia visual entre dos puntos no indica si sus estimaciones son estadísticamente distinguibles.
+
+```{r ranking}
+tabla(eda$top10[c("puesto", "departamento_codigo", "departamento", "n_muestra", "diario_pct", "uso_pct")],
+      "Diez dominios con mayor proporción ponderada de uso diario")
+graficos$top10
+```
+
+El gráfico y la tabla presentan los diez primeros dominios según el porcentaje de uso diario sin redondear, con desempate por código DIVIPOLA. El décimo dominio, `r eda$top10$departamento[10]`, registra `r pct(eda$top10$diario_pct[10])`. La columna de cualquier uso permite ver que una posición alta en uso diario puede coexistir con un orden distinto cuando se incluye a los usuarios esporádicos. El ranking resume las estimaciones puntuales de una métrica específica. Por la variabilidad muestral, dominios con valores cercanos podrían cambiar de posición.
+
+```{r tabla_geo}
+tabla(eda$departamentos[c("departamento_codigo", "departamento", "n_muestra", "diario_pct", "uso_pct")],
+      "Comparación ponderada para los 33 dominios")
+```
+
+La tabla completa facilita la consulta del tamaño de muestra y de ambas proporciones en cada dominio. La diferencia entre cualquier uso y uso diario representa a quienes declaran usar internet de forma semanal, mensual o anual. Así se puede distinguir entre baja proporción de usuarios y menor intensidad de uso entre las personas cubiertas. Los tamaños de muestra aportan contexto al comparar dominios. Por sí solos no indican la precisión de las estimaciones.
+
+## Cotejo con cifras publicadas
+
+```{r cotejo}
+tabla(eda$cotejo_dane, "Contraste del indicador de cualquier uso, porcentaje a un decimal", 1)
+```
+
+Se cotejan a un decimal las cifras de cualquier uso para el país, hombres, mujeres, Valle del Cauca y Vichada con la tabla 15 y el gráfico 20 del boletín. Coinciden `r sum(eda$cotejo_dane$coincide)` de `r nrow(eda$cotejo_dane)` comparaciones. Esto respalda la definición del indicador y la aplicación del factor de expansión para esos casos. La verificación externa se limita a los dominios e indicadores cotejados. El uso diario y su ranking se calcularon a partir de los microdatos para este trabajo.
+
+# Conclusiones
+
+1. El uso diario concentra el `r pct(eda$nacional$diario_pct)` del universo analizado, mientras que el `r pct(eda$frecuencia$porcentaje_ponderado[5])` declara que no usa internet. La participación cambia al aplicar los factores de expansión.
+2. La distancia entre los grupos etarios con mayor y menor proporción diaria llega a `r d_txt(alto_edad$diario_pct - bajo_edad$diario_pct)` puntos porcentuales. Entre las dos categorías de sexo al nacer, la diferencia descriptiva es de `r d_txt(diff(range(eda$sexo$diario_pct)))` puntos.
+3. La frecuencia diaria muestra heterogeneidad territorial. `r primero$departamento` y `r ultimo$departamento` delimitan el rango observado. El ranking ordena estimaciones puntuales y las diferencias se interpretan como asociaciones descriptivas.
+4. El cruce preservó los `r n_txt(limpieza$flujo$filas[4])` casos elegibles. El tratamiento de los `r n_txt(limpieza$flujo$filas[2])` menores de cinco años como casos fuera del universo TIC mantiene explícito el denominador de la pregunta.
+
+**Implicaciones para la toma de decisiones.** Distinguir entre cualquier uso y uso diario ayuda a decidir qué preguntas conviene investigar primero. En los grupos y territorios con porcentajes diarios bajos, ambas medidas permiten indagar si conviene concentrar el diagnóstico en personas que declaran no usar internet o en quienes ya lo usan de manera esporádica. Las cifras sirven para orientar esa indagación. Priorizar intervenciones requeriría conocer las barreras locales y la precisión de las estimaciones.
+
+**Límites.** Los factores calibrados permiten estimar proporciones. El diseño estratificado, multietápico y por conglomerados requiere un cálculo específico de errores estándar e intervalos de confianza para determinar la precisión y evaluar contrastes. Este EDA trabaja con estimaciones puntuales y comparaciones descriptivas de un solo año. Las diferencias observadas pueden combinar características demográficas y territoriales. Los resultados no permiten atribuirlas causalmente a la edad, al sexo al nacer, al lugar de residencia ni a una intervención.
+
+**Líneas de investigación.** Un trabajo posterior podría estimar intervalos de confianza con las variables del diseño muestral, explorar diferencias entre cabecera y resto en los dominios con cobertura y comparar varios años cuando se pueda comprobar la equivalencia de las preguntas y los universos. También sería pertinente contrastar la frecuencia con indicadores de acceso en el hogar, calidad del servicio o habilidades digitales.
+
+# Contribuciones del equipo
+
+Registro pendiente de diligenciar por los integrantes. Cada entrada debe indicar el aporte efectivamente realizado y la evidencia correspondiente, cuando esté disponible.
+
+- **Integrante 1 · `r params$integrante_1`.** `r params$contribucion_1`
+- **Integrante 2 · `r params$integrante_2`.** `r params$contribucion_2`
+- **Integrante 3 · `r params$integrante_3`.** `r params$contribucion_3`
+
+# Referencias
+
+- [DANE. Encuesta Nacional de Calidad de Vida 2025, catálogo 905](https://microdatos.dane.gov.co/index.php/catalog/905).
+- [DANE. Diccionario oficial de los tres módulos](https://microdatos.dane.gov.co/index.php/catalog/905/data-dictionary).
+- [DANE. Ficha metodológica, formulario y estructura de datos](https://microdatos.dane.gov.co/index.php/catalog/905/related-materials).
+- [DANE. Boletín técnico de resultados ECV 2025](https://www.dane.gov.co/files/operaciones/ECV/bol-ECV-2025.pdf).
+- [DANE. Codificación DIVIPOLA](https://www.dane.gov.co/index.php/sistema-estadistico-nacional-sen/normas-y-estandares/nomenclaturas-y-clasificaciones/nomenclaturas/codificacion-de-la-division-politica-administrativa-de-colombia-divipola).

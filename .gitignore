@@ -1,0 +1,18 @@
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+Thumbs.db
+
+# Microdatos originales y procesados
+/DATOS/*
+!/DATOS/.gitkeep
+
+# Temporales de Knit
+/PROYECTO_ECV2025_files/
+/PROYECTO_ECV2025.knit.md
+/PROYECTO_ECV2025.utf8.md
+
+# Evidencias locales y documentos de entrega con datos personales
+/RESULTADOS/evidencias_rstudio/
+/ENTREGA/
